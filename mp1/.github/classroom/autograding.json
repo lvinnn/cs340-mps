@@ -49,9 +49,9 @@
       "points": 3
     },
     {
-      "name": "`emoji_count` correctly detects UTF-8 emojis, with different UTF-8 bytes",
+      "name": "`emoji_count` correctly detects UTF-8 emojis with different UTF-8 bytes",
       "setup": "make test",
-      "run": "./test -w NoTests '`emoji_count` correctly detects UTF-8 emojis, with different UTF-8 bytes'",
+      "run": "./test -w NoTests '`emoji_count` correctly detects UTF-8 emojis with different UTF-8 bytes'",
       "comparison": "included",
       "timeout": 0.1,
       "points": 3
@@ -185,17 +185,17 @@
       "points": 3
     },
     {
-      "name": "translate - translation with only one emoji, result is a shorter string",
+      "name": "translate - translation with only one emoji result is a shorter string",
       "setup": "make test",
-      "run": "./test -w NoTests 'translate - translation with only one emoji, result is a shorter string'",
+      "run": "./test -w NoTests 'translate - translation with only one emoji result is a shorter string'",
       "comparison": "included",
       "timeout": 0.1,
       "points": 3
     },
     {
-      "name": "translate - translation with one emoji, result is a longer string",
+      "name": "translate - translation with one emoji result is a longer string",
       "setup": "make test",
-      "run": "./test -w NoTests 'translate - translation with one emoji, result is a longer string'",
+      "run": "./test -w NoTests 'translate - translation with one emoji result is a longer string'",
       "comparison": "included",
       "timeout": 0.1,
       "points": 3
