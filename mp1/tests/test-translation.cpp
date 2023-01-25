@@ -70,7 +70,7 @@ TEST_CASE("translate - translation with text in between emojis", "[weight=3][par
   emoji_destroy(&emoji);
 }
 
-TEST_CASE("translate - translation with only one emoji, result is a shorter string", "[weight=3][part=2]") {
+TEST_CASE("translate - translation with only one emoji result is a shorter string", "[weight=3][part=2]") {
   emoji_t emoji;
   emoji_init(&emoji);
 
@@ -87,7 +87,7 @@ TEST_CASE("translate - translation with only one emoji, result is a shorter stri
   emoji_destroy(&emoji);
 }
 
-TEST_CASE("translate - translation with one emoji, result is a longer string", "[weight=3][part=2]") {
+TEST_CASE("translate - translation with one emoji result is a longer string", "[weight=3][part=2]") {
   emoji_t emoji;
   emoji_init(&emoji);
 

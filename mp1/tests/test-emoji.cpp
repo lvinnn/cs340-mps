@@ -68,7 +68,7 @@ TEST_CASE("`emoji_count` correctly detects UTF-8 non-emojis", "[weight=3][part=1
   free(s);
 }
 
-TEST_CASE("`emoji_count` correctly detects UTF-8 non-emojis, with wrong encoding", "[weight=3][part=1]") {
+TEST_CASE("`emoji_count` correctly detects UTF-8 non-emojis with wrong encoding", "[weight=3][part=1]") {
   char *s = (char *) malloc(100);
   strcpy(s, "Not an emoji: \xF0\x9F\x2B\x96");
   int r = emoji_count(s);
@@ -76,7 +76,7 @@ TEST_CASE("`emoji_count` correctly detects UTF-8 non-emojis, with wrong encoding
   free(s);
 }
 
-TEST_CASE("`emoji_count` correctly detects UTF-8 emojis, with different UTF-8 bytes", "[weight=3][part=1]") {
+TEST_CASE("`emoji_count` correctly detects UTF-8 emojis with different UTF-8 bytes", "[weight=3][part=1]") {
   char *s = (char *) malloc(100);
   strcpy(s, "Not an emoji: \xE0\x9F\x92\xF0\x9F\x92\xBB");
   int r = emoji_count(s);
