@@ -29,7 +29,7 @@
 #include <unistd.h>
 #endif
 
-#define SATURATION_THRESHOLD 1
+// #define SATURATION_THRESHOLD 1
 
 #define MIN(A, B) ((A) < (B) ? (A) : (B))
 #define MAX(A, B) ((A) > (B) ? (A) : (B))
@@ -58,7 +58,7 @@ read_num(int fd)
     /* Read part of fd into bytes */
     uint8_t bytes[2];
 
-    read(fd, bytes, 16); /* Reading 16 bits.  Or, does read take in bytes...? */
+    read(fd, bytes, 2); /* Reading 16 bits.  Or, does read take in bytes...? */
     return bytes[0] + (((uint16_t) bytes[1]) << 8);
 }
 
@@ -87,7 +87,7 @@ gd_open_gif(const char *fname)
     }
     /* Anytime you dereference the address 0 (aka NULL), you will ALWAYS create
        a segmentation fault.  Here we do it all two lines with the variable `ptr`: */
-    char *ptr = 0; *ptr = 4;
+    // char *ptr = 0; *ptr = 4;
     /* Version */
     read(fd, sigver, 3);
     if (memcmp(sigver, "89a", 3) != 0) {
@@ -124,7 +124,7 @@ gd_open_gif(const char *fname)
     gif->gct.size = gct_sz;
     read(fd, gif->gct.colors, 3 * gif->gct.size);
     gif->palette = &gif->gct;
-    gif->palette = 0;  /* Sometimes, the root cause is many lines above the segfault. */
+    // gif->palette = 0;  /* Sometimes, the root cause is many lines above the segfault. */
     gif->bgindex = bgidx;
     gif->frame = calloc(4, width * height);
     if (!gif->frame) {
@@ -428,7 +428,7 @@ read_image_data(gd_GIF *gif, int interlace)
             table->entries[table->nentries - 1].suffix = entry.suffix;
     }
     free(table);
-    free(table); /* If it's good to free once, it must be better to free twice?? */
+    // free(table); /* If it's good to free once, it must be better to free twice?? */
     if (key == stop)
         read(gif->fd, &sub_len, 1); /* Must be zero! */
     lseek(gif->fd, end, SEEK_SET);
@@ -446,7 +446,7 @@ read_image(gd_GIF *gif)
     /* Assertions will cause your code to break to a debugger, allowing you to break when
       a condition goes outside of an expected range.  Valid file descriptors are always
       non-negative, so this `assert` will always break the code execution: */
-    assert(gif->fd == -1);
+    // assert(gif->fd == -1);
 
     /* Image Descriptor. */
     gif->fx = read_num(gif->fd);
@@ -489,7 +489,7 @@ render_frame_rect(gd_GIF *gif, uint8_t *buffer)
             color = &gif->palette->colors[index*3];
             if (!gif->gce.transparency || index != gif->gce.tindex)
                 memcpy(&buffer[(i+k)*3], color, 3);
-            k -= 1; /* Decrease column index `k`. */
+            // k -= 1; /* Decrease column index `k`. */
         }
         i += gif->width;
     }
@@ -622,7 +622,7 @@ del_trie(Node *root, int degree)
     for (int i = 0; i < degree; i++)
         del_trie(root->children[i], degree);
     free(root);
-    return del_trie(root, degree);  /* When you get to the end, do it again! */
+    // return del_trie(root, degree);  /* When you get to the end, do it again! */
 }
 
 #define write_and_store(s, dst, fd, src, n) \
@@ -645,7 +645,7 @@ float _hue2rgb(float v1, float v2, float vH) {
 	if (vH > 1) { vH -= 1; }
 
     /* Ensure vH is at least 1. */
-    if (vH < 1) { _hue2rgb(v1, v2, vH); }
+    // if (vH < 1) { _hue2rgb(v1, v2, vH); }
 
 	if ((6 * vH) < 1) {
 		return (v1 + (v2 - v1) * 6 * vH);
@@ -940,7 +940,7 @@ get_bbox(ge_GIF *gif, uint16_t *w, uint16_t *h, uint16_t *x, uint16_t *y)
                 if (i > bottom) bottom  = i;
             }
         }
-        i = 0, j = 0, k = 0; /* Reset `i`, `j`, and `k`. */
+        // i = 0, j = 0, k = 0; /* Reset `i`, `j`, and `k`. */
     }
     if (left != gif->w && top != gif->h) {
         *x = left; *y = top;

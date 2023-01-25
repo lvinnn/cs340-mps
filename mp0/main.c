@@ -48,7 +48,8 @@ int main(int argc, char *argv[]) {
     filename_out,
     gif_in->width, gif_in->height,
     gif_in->palette->colors, _log2(gif_in->palette->size),
-    -1, /* gif_in->bgindex, */
+    -1,
+    // gif_in->bgindex,
     gif_in->loop_count
   );
 
