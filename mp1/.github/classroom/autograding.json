@@ -41,9 +41,9 @@
       "points": 3
     },
     {
-      "name": "`emoji_count` correctly detects UTF-8 non-emojis, with wrong encoding",
+      "name": "`emoji_count` correctly detects UTF-8 non-emojis with wrong encoding",
       "setup": "make test",
-      "run": "./test -w NoTests '`emoji_count` correctly detects UTF-8 non-emojis, with wrong encoding'",
+      "run": "./test -w NoTests '`emoji_count` correctly detects UTF-8 non-emojis with wrong encoding'",
       "comparison": "included",
       "timeout": 0.1,
       "points": 3
