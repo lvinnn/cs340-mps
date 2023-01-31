@@ -5,6 +5,8 @@ extern "C" {
 #endif
 
 typedef struct _emoji_t {
+    char **source;
+    char **translation;
 } emoji_t;
 
 void emoji_init(emoji_t *emoji);

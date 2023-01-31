@@ -25,7 +25,7 @@ TEST_CASE("translate - translation with one translation", "[weight=3][part=2]") 
   emoji_init(&emoji);
 
   emoji_add_translation(&emoji, (const unsigned char *) "🧡", (const unsigned char *) "heart");
-
+  
   unsigned char *translation = (unsigned char *) emoji_translate_file_alloc(&emoji, "tests/txt/simple.txt");
   REQUIRE(translation != NULL);
 

@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "emoji.h": "c",
+        "chrono": "c"
+    }
+}

@@ -6,11 +6,17 @@
 #include "emoji-translate.h"
 
 int main() {
-  // Feel free to delete all of this and use this function in any way you want:
-  printf("Currently, `main.c` provides a basic call to your functions.\n");
-  printf("- Edit `main.c` to test your functions within the context of `main`.\n");
-  printf("- A test suite is provided in `tests` folder.\n");
+  emoji_t emoji;
+  emoji_init(&emoji);
 
-  printf("Your favorite emoji: %s\n", emoji_favorite());  
-  return 0;
+  emoji_add_translation(&emoji, (const unsigned char *)"😊", (const unsigned char *)"");
+
+  unsigned char *translation = (unsigned char *) emoji_translate_file_alloc(&emoji, "tests/txt/text-inbetween.txt");
+  // REQUIRE(translation != NULL);
+
+  // INFO("translation := " << translation);
+  // REQUIRE(strcmp((char *) translation, " CS340 ") == 0);
+  free(translation);
+
+  emoji_destroy(&emoji);
 }
