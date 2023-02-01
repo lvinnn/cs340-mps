@@ -1,0 +1,43 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+CATCH_CONFIG_MAIN	tests/test.cpp	/^#define CATCH_CONFIG_MAIN$/;"	d	file:
+CC	Makefile	/^CC = ${CXX} -x c ${CFLAGS}$/;"	m
+CFLAGS	Makefile	/^CFLAGS = -W -Wall -Wno-pointer-sign$/;"	m
+CFLAGS_CATCH	Makefile	/^CFLAGS_CATCH = -fpermissive -w -std=c++11$/;"	m
+CS240	Makefile	/^CS240=-DSOLUTION$/;"	m
+CXX	Makefile	/^CXX = g++$/;"	m
+CXX	Makefile	/^CXX = g++-11$/;"	m
+CXX	Makefile	/^CXX = g++-9$/;"	m
+ERROR_INVALID_CHUNK_DATA	lib/png.c	/^const int ERROR_INVALID_CHUNK_DATA = 3;$/;"	v
+ERROR_INVALID_FILE	lib/png.c	/^const int ERROR_INVALID_FILE = 2;$/;"	v
+ERROR_INVALID_PARAMS	lib/png.c	/^const int ERROR_INVALID_PARAMS = 1;$/;"	v
+ERROR_NO_UIUC_CHUNK	lib/png.c	/^const int ERROR_NO_UIUC_CHUNK = 4;$/;"	v
+PNG	lib/png.h	/^typedef struct _PNG PNG;$/;"	t	typeref:struct:_PNG
+PNG_Chunk	lib/png.h	/^typedef struct _PNG_Chunk PNG_Chunk;$/;"	t	typeref:struct:_PNG_Chunk
+PNG_FILE_FINGERPRINT	lib/png.c	/^const unsigned char PNG_FILE_FINGERPRINT[8] = { 0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a };$/;"	v
+PNG_close	lib/png.c	/^void PNG_close(PNG *png) {$/;"	f
+PNG_free_chunk	lib/png.c	/^void PNG_free_chunk(PNG_Chunk *chunk) {$/;"	f
+PNG_open	lib/png.c	/^PNG * PNG_open(const char *filename, const char *mode) {$/;"	f
+PNG_read	lib/png.c	/^size_t PNG_read(PNG *png, PNG_Chunk *chunk) {$/;"	f
+PNG_write	lib/png.c	/^size_t PNG_write(PNG *png, PNG_Chunk *chunk) {$/;"	f
+_PNG	lib/png.h	/^struct _PNG {$/;"	s
+_PNG_Chunk	lib/png.h	/^struct _PNG_Chunk {$/;"	s
+crc	lib/png.h	/^  uint32_t crc;$/;"	m	struct:_PNG_Chunk
+crc32	lib/crc32.c	/^void crc32(const void *data, size_t n_bytes, uint32_t* crc) {$/;"	f
+crc32_for_byte	lib/crc32.c	/^uint32_t crc32_for_byte(uint32_t r) {$/;"	f
+data	lib/png.h	/^  unsigned char *data;$/;"	m	struct:_PNG_Chunk
+f	lib/png.h	/^  FILE *f;$/;"	m	struct:_PNG
+len	lib/png.h	/^  uint32_t len;$/;"	m	struct:_PNG_Chunk
+main	png-analyze.c	/^int main(int argc, char *argv[]) {$/;"	f
+main	png-extractGIF.c	/^int main(int argc, char *argv[]) {$/;"	f
+main	png-hideGIF.c	/^int main(int argc, char *argv[]) {$/;"	f
+main	png-rewrite.c	/^int main(int argc, char *argv[]) {$/;"	f
+png_analyze	png-analyze.c	/^int png_analyze(const char *png_filename) {$/;"	f
+png_extractGIF	png-extractGIF.c	/^int png_extractGIF(const char *png_filename, const char *gif_filename) {$/;"	f
+png_hideGIF	png-hideGIF.c	/^int png_hideGIF(const char *png_filename, const char *gif_filename) {$/;"	f
+png_rewrite	png-rewrite.c	/^int png_rewrite(const char *png_filename_in, const char *png_filename_out) {$/;"	f
+type	lib/png.h	/^  char type[5];$/;"	m	struct:_PNG_Chunk
