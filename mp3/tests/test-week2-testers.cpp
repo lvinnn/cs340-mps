@@ -7,6 +7,7 @@
 
 // Testers 1-5
 TEST_CASE("testers/mp0-gif - illinify gif", "[weight=20][part=5][suite=week2][timeout=30]") {
+  system("make -s");
   system("make -s mp0-gif");
 
   system("cp tests/testers/mp0-gif/tay-small.gif tay-small.gif");
