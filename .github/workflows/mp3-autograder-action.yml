@@ -4,7 +4,7 @@ name: mp3 autograding
 jobs:
   week2:
     name: week2
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     timeout-minutes: 5
     steps:
     - name: Checkout release repository
@@ -50,7 +50,7 @@ jobs:
     - autograding
   autograding:
     name: autograding
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     timeout-minutes: 5
     steps:
     - name: Checkout release repository
