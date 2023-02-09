@@ -8,6 +8,8 @@ extern "C" {
 // PNG
 struct _PNG {
   // Add any elements you need to store the PNG here:
+  FILE* fp;
+  
 };
 typedef struct _PNG PNG;
 

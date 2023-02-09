@@ -63,13 +63,17 @@ TEST_CASE("`PNG_read` returns the correct return values", "[weight=5][part=1]") 
 
   PNG_Chunk chunk;
 
-  CHECK(PNG_read(png, &chunk) == 25);   // IHDR
+  int check = PNG_read(png, &chunk);
+  CHECK(check == 25);   // IHDR
   PNG_free_chunk(&chunk);
-  CHECK(PNG_read(png, &chunk) == 21);   // pHYs
+  check = PNG_read(png, &chunk);
+  CHECK(check == 21);   // pHYs
   PNG_free_chunk(&chunk);
-  CHECK(PNG_read(png, &chunk) == 5928); // IDAT
+  check = PNG_read(png, &chunk);
+  CHECK(check == 5928); // IDAT
   PNG_free_chunk(&chunk);
-  CHECK(PNG_read(png, &chunk) == 12);   // IEND
+  check = PNG_read(png, &chunk);
+  CHECK(check == 12);   // IEND
   PNG_free_chunk(&chunk);
 
   PNG_close(png);

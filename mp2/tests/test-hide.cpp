@@ -21,12 +21,14 @@ TEST_CASE("png_hideGIF - Hidden PNG chunk layout is correct", "[weight=20][part=
   int chunkCount = 0;
   size_t read_size = PNG_read(png, &chunks[chunkCount++]);
   while (read_size != 0 && chunkCount < 50) {
+    PNG_Chunk chonk = chunks[chunkCount-1];
     read_size = PNG_read(png, &chunks[chunkCount++]);
   };
   PNG_close(png);
 
   int seenChunk_IHDR = 0, seenChunk_uiuc = 0, seenChunk_IEND = 0;
   for (int i = 0; i < chunkCount - 1; i++) {
+    PNG_Chunk chok = chunks[i];
     if(strncmp(chunks[i].type, "IHDR", 4) == 0) {
       seenChunk_IHDR = 1;
     }
