@@ -6,7 +6,27 @@
 #include <string.h>
 #include <unistd.h>
 
+typedef struct _metadata_t {
+  unsigned int size;     // The size of the memory block.
+  unsigned char isUsed;  // 0 if the block is free; 1 if the block is used.
+  void* nextBlock;
+  void* nextFree;
+} metadata_t;
 
+void* startOfHeap = NULL;
+metadata_t* lastBlock = NULL;
+void* startOfFree = NULL;
+
+void printHeap() {
+  if(startOfHeap != NULL) {
+    metadata_t *curr = startOfHeap;
+    while(curr) {
+      printf("%d,%d ", curr->size, curr->isUsed);
+      curr = curr->nextBlock;
+    }
+    printf("\n");
+  }
+}
 
 /**
  * Allocate space for array in memory
@@ -33,7 +53,17 @@
  */
 void *calloc(size_t num, size_t size) {
   // implement calloc:
-  return NULL;
+  void *ptr = malloc(num * size);
+  if(ptr == NULL) {
+    return NULL;
+  }
+  char* data = ptr;
+  for(int i=0; i<num*size; i++) {
+    data[i] = 0x00;
+  }
+
+  // printHeap();
+  return ptr;
 }
 
 
@@ -60,7 +90,51 @@ void *calloc(size_t num, size_t size) {
  */
 void *malloc(size_t size) {
   // implement malloc:
-  return NULL;
+  // Allocate heap memory for the metadata structure and populate the variables:
+
+  if (startOfHeap == NULL) {
+    startOfHeap = sbrk(0);
+  } else {
+    metadata_t* curr = startOfFree;
+    metadata_t* prevFree = startOfFree;
+    
+    while(curr != NULL) {
+      if(curr->size >= size) {
+        curr->isUsed = 1;
+        if(curr == startOfFree) startOfFree = curr->nextFree;
+        //block splitting
+        if(size + sizeof(metadata_t) < curr->size) {
+          metadata_t* split = (void *)curr + sizeof(metadata_t) + size;
+          split->isUsed = 0;
+          split->size = curr->size - size - sizeof(metadata_t);
+          split->nextBlock = curr->nextBlock;
+          curr->nextBlock = split;
+          split->nextFree = curr->nextFree;
+          curr->nextFree = NULL;
+          if(prevFree->nextFree == curr) prevFree->nextFree = split;
+          else startOfFree = split; //edge case splitting first block
+          curr->size = size;
+        }
+        return (void *)curr + sizeof(metadata_t);
+      }
+      prevFree = curr;
+      curr = curr->nextFree;
+    }
+  }
+  metadata_t * meta = sbrk( sizeof(metadata_t) );
+  meta->size = size;
+  meta->isUsed = 1;
+  meta->nextBlock = NULL;
+  meta->nextFree = NULL;
+  if(lastBlock) lastBlock->nextBlock = meta;
+  lastBlock = meta;
+
+  // Allocate heap memory for the requested memory:
+  void *ptr = sbrk( size );
+  if(ptr == (void *)-1) return NULL;
+
+  // Return the pointer for the requested memory:
+  return ptr;
 }
 
 
@@ -81,7 +155,40 @@ void *malloc(size_t size) {
  *    passed as argument, no action occurs.
  */
 void free(void *ptr) {
-  // implement free
+  // Find the metadata located immediately before `ptr`:
+  metadata_t *meta = ptr - sizeof( metadata_t );
+  meta->isUsed = 0;
+  if(startOfFree == NULL) {
+    startOfFree = meta;
+  } else {
+    if(startOfFree > ptr) {
+      meta->nextFree = startOfFree;
+      startOfFree = meta;
+    } else {
+      metadata_t *curr = startOfFree;
+      while(curr->nextFree && curr->nextFree < ptr) {
+        curr = curr->nextFree;
+      }
+      meta->nextFree = curr->nextFree;
+      curr->nextFree = meta;
+    }
+  }
+
+  metadata_t * curr = startOfFree;
+  while(curr) {
+    if(curr->nextBlock) {
+      metadata_t * next = curr->nextBlock;
+      if(curr->isUsed == 0 && next->isUsed == 0) {
+        //combine!!
+        curr->size += next->size + sizeof(metadata_t);
+        curr->nextBlock = next->nextBlock;
+        curr->nextFree = next->nextFree;
+      }
+    }
+    curr = curr->nextFree;
+  }
+
+  // printHeap();
 }
 
 
@@ -131,6 +238,27 @@ void free(void *ptr) {
  * @see http://www.cplusplus.com/reference/clibrary/cstdlib/realloc/
  */
 void *realloc(void *ptr, size_t size) {
+  if(ptr == NULL)
+    return malloc(size);
+  else if(size == 0){
+    free(ptr);
+    return NULL;
+  }
+
   // implement realloc:
-  return NULL;
+  metadata_t *meta = ptr - sizeof( metadata_t );
+  if(meta->size < size) {
+    free(ptr);
+    void * data = malloc(size);
+    memcpy(data, ptr, meta->size);
+    return data;
+  } else {
+    metadata_t *split = ptr + size;
+    split->isUsed = 0;
+    split->nextBlock = meta->nextBlock;
+    split->size = meta->size - size;
+    meta->size = size;
+    meta->nextBlock = split;
+    return ptr;
+  }
 }
