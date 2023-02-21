@@ -226,14 +226,13 @@ typedef struct _connection_data_t {
   const char* resource_name;
 } connection_data_t;
 
-void* connection_thread_test(void* conn_data_vptr){
+void* connection_thread_test(void* conn_data_vptr) {
   connection_data_t* con_ptr = (connection_data_t*) conn_data_vptr;
 
-  int client_fd = generate_client_socket(con_ptr -> port);
-
-  wallet_MOD_noread(client_fd, con_ptr -> resource_name, con_ptr -> delta);
-
+  int client_fd = generate_client_socket(con_ptr->port);
+  wallet_MOD(client_fd, con_ptr->resource_name, con_ptr->delta);
   wallet_EXIT(client_fd);
+
   free(conn_data_vptr);
   return NULL;
 }

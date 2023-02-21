@@ -7,16 +7,15 @@
  * Initializes an empty wallet.
  */
 void wallet_init(wallet_t *wallet) {
-  // Implement
+  // Implement `wallet_init`
 }
-
-
 
 /**
  * Returns the amount of a given `resource` in the given `wallet`.
  */
 int wallet_get(wallet_t *wallet, const char *resource) {
-  // Implement this
+  // Implement `wallet_get`
+  return -1;
 }
 
 /**
@@ -26,12 +25,13 @@ int wallet_get(wallet_t *wallet, const char *resource) {
  * - Returns the amount of resources in the wallet AFTER the change has been applied.
  */
 int wallet_change_resource(wallet_t *wallet, const char *resource, const int delta) {
-  // Implement this
+  // Implement `wallet_change_resource`
+  return -1;
 }
 
 /**
  * Destroys a wallet, freeing all associated memory.
  */
 void wallet_destroy(wallet_t *wallet) {
-  // Implement this
+  // Implement `wallet_destroy`
 }

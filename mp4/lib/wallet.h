@@ -5,15 +5,8 @@
 extern "C" {
 #endif
 
-typedef struct wallet_resource_ {
-  const char *resource_name;
-  int amount;
-  struct wallet_resource_ *next;
-} wallet_resource;
-
 typedef struct wallet_t_ {
-  pthread_mutex_t lock;
-  wallet_resource *head;
+  // Add anything here! :)
 } wallet_t;
 
 void wallet_init(wallet_t *wallet);
