@@ -57,12 +57,9 @@ void *calloc(size_t num, size_t size) {
   if(ptr == NULL) {
     return NULL;
   }
-  char* data = ptr;
-  for(int i=0; i<num*size; i++) {
-    data[i] = 0x00;
-  }
+  metadata_t * meta = ptr - sizeof(metadata_t);
+  memset(ptr, 0, meta->size);
 
-  // printHeap();
   return ptr;
 }
 
@@ -155,7 +152,7 @@ void *malloc(size_t size) {
  *    passed as argument, no action occurs.
  */
 void free(void *ptr) {
-  // Find the metadata located immediately before `ptr`:
+  // printf("mdafkmaldkfsa\n");
   metadata_t *meta = ptr - sizeof( metadata_t );
   meta->isUsed = 0;
   if(startOfFree == NULL) {
@@ -173,13 +170,14 @@ void free(void *ptr) {
       curr->nextFree = meta;
     }
   }
-
+  // printf("jk im confused asf\n");
   metadata_t * curr = startOfFree;
   while(curr) {
     if(curr->nextBlock) {
       metadata_t * next = curr->nextBlock;
       if(curr->isUsed == 0 && next->isUsed == 0) {
         //combine!!
+        // printf("uhhhhh\n");
         curr->size += next->size + sizeof(metadata_t);
         curr->nextBlock = next->nextBlock;
         curr->nextFree = next->nextFree;
@@ -187,8 +185,7 @@ void free(void *ptr) {
     }
     curr = curr->nextFree;
   }
-
-  // printHeap();
+  // printf("gaaaahd\n");
 }
 
 
@@ -247,16 +244,21 @@ void *realloc(void *ptr, size_t size) {
 
   // implement realloc:
   metadata_t *meta = ptr - sizeof( metadata_t );
-  if(meta->size < size) {
+  if(meta->size < size) { //new block
+    // printf("no??\n");
+    int s = meta->size;
     free(ptr);
     void * data = malloc(size);
-    memcpy(data, ptr, meta->size);
+    // memcpy(data, ptr, s);
+    for(int i=0; i<s; i++) {
+      *((char *)data+i) = *((char *)ptr+i);
+    }
     return data;
-  } else {
+  } else { //split
     metadata_t *split = ptr + size;
     split->isUsed = 0;
     split->nextBlock = meta->nextBlock;
-    split->size = meta->size - size;
+    split->size = meta->size - size - sizeof(metadata_t);
     meta->size = size;
     meta->nextBlock = split;
     return ptr;

@@ -13,10 +13,14 @@ void *reduce(void *ptr, int size) {
             exit(1);
         }
 
+        // printf("pre-reduce size: %d\n", size);
         ptr1 = reduce(ptr1, size / 2);
+        // printf("ptr 1: %d\n", *((int *)ptr1));
         ptr2 = reduce(ptr2, size / 2);
+        // printf("ptr 2: %d\n", *((int *)ptr2));
 
         if (*((int *)ptr1) != size / 2 || *((int *)ptr2) != size / 2) {
+            printf("oi amigo, size/2 = %d, but *((int *)ptr1) = %d, *((int *)ptr2) = %d\n, ", size/2, *((int *)ptr1), *((int *)ptr2));
             fprintf(stderr, "Memory failed to contain correct data after many "
                             "allocations!\n");
             exit(2);
@@ -32,8 +36,10 @@ void *reduce(void *ptr, int size) {
         }
 
         *((int *)ptr1) = size;
+        // printf("ptr1 is now %d, %d\n", size, *((int *)ptr1));
         return ptr1;
     } else {
+        // printf("size: %d\n", size);
         *((int *)ptr) = size;
         return ptr;
     }
@@ -47,7 +53,7 @@ int main() {
         void *ptr = malloc(size);
         ptr = reduce(ptr, size / 2);
         free(ptr);
-
+        
         size /= 2;
     }
 

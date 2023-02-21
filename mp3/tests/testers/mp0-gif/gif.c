@@ -605,8 +605,9 @@ del_trie(Node *root, int degree)
 {
     if (!root)
         return;
-    for (int i = 0; i < degree; i++)
+    for (int i = 0; i < degree; i++) {
         del_trie(root->children[i], degree);
+    }
     free(root);
 }
 
@@ -874,8 +875,10 @@ put_image(ge_GIF *gif, uint16_t w, uint16_t h, uint16_t x, uint16_t y)
     write_num(gif->fd, h);
     write(gif->fd, (uint8_t []) {0x00, gif->depth}, 2);
     root = node = new_trie(degree, &nkeys);
+    
     key_size = gif->depth + 1;
     put_key(gif, degree, key_size); /* clear code */
+    
     for (i = y; i < y+h; i++) {
         for (j = x; j < x+w; j++) {
             uint8_t pixel = gif->frame[i*gif->w+j] & (degree - 1);
@@ -887,6 +890,7 @@ put_image(ge_GIF *gif, uint16_t w, uint16_t h, uint16_t x, uint16_t y)
                 if (nkeys < 0x1000) {
                     if (nkeys == (1 << key_size))
                         key_size++;
+                    
                     node->children[pixel] = new_node(nkeys++, degree);
                 } else {
                     put_key(gif, degree, key_size); /* clear code */
@@ -898,10 +902,15 @@ put_image(ge_GIF *gif, uint16_t w, uint16_t h, uint16_t x, uint16_t y)
             }
         }
     }
+    printf("man\n");
     put_key(gif, node->key, key_size);
+    printf("man\n");
     put_key(gif, degree + 1, key_size); /* stop code */
+    printf("man\n");
     end_key(gif);
+    printf("man\n");
     del_trie(root, degree);
+    printf("man\n");
 }
 
 static int
@@ -948,7 +957,6 @@ ge_add_frame(ge_GIF *gif, uint16_t delay)
 {
     uint16_t w, h, x, y;
     uint8_t *tmp;
-
     if (delay || (gif->bgindex >= 0))
         add_graphics_control_extension(gif, delay);
     if (gif->nframes == 0) {
