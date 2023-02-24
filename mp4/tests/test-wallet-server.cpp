@@ -132,6 +132,7 @@ int launch_server(int port) {
 
   pthread_create(&server_tid, NULL, launch_server_thread, &port);
 
+  /*
   int attempts = 0;
   returnValue = 1;
   sprintf(cmd, "lsof -i:%d -t", port);
@@ -145,6 +146,8 @@ int launch_server(int port) {
       return -1;
     }
   }
+  */
+  sleep(1);
 
   return port;
 }
