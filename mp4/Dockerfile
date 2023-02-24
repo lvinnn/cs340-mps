@@ -1,2 +1,2 @@
 FROM gcc:latest
-RUN apt-get update && apt-get install -y valgrind
+RUN apt-get update && apt-get install -y valgrind lsof
