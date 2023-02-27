@@ -1,0 +1,10 @@
+{
+    "files.associations": {
+        "stdlib.h": "c",
+        "pthread.h": "c",
+        "wallet.h": "c",
+        "typeinfo": "c",
+        "memory_resource": "c",
+        "mutex": "c"
+    }
+}
