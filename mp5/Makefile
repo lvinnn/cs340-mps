@@ -13,9 +13,9 @@ endif
 endif
 endif
 
-CC = $(CXX) -x c -g -Wall 
-CFLAGS_CATCH = -fpermissive -w $(CS340) -pthread -g -std=c++11
-CFLAGS = -W -Wall $(CS340) -pthread
+CC = gcc
+CFLAGS_CATCH = -fpermissive -w $(CS340) -lpthread -gdwarf-4 -std=c++11
+CFLAGS = -gdwarf-4 -W -Wall $(CS340) -lpthread -Wno-unused-result -Wno-unused-function -Wno-unused-parameter 
 
 all: server
 
