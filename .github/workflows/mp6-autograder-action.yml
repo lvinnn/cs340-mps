@@ -23,12 +23,12 @@ jobs:
       with:
         src_path: release/mp6
         dst_path: mp6
-        copy: '.github/classroom : .github/classroom, Makefile : Makefile, courses_microservice : courses_microservice, test_microservice.py : test_microservice.py'
+        copy: '.github/classroom : .github/classroom, courses_microservice : courses_microservice, test_microservice.py : test_microservice.py'
     - name: Verify student submission
       id: verify-policy
       uses: illinois/verify-policy@v1
       with:
-        reference_files: 'release/mp6/.github/classroom : mp6/.github/classroom, release/mp6/Makefile : mp6/Makefile, release/mp6/courses_microservice : mp6/courses_microservice, release/mp6/test_microservice.py : mp6/test_microservice.py'
+        reference_files: 'release/mp6/.github/classroom : mp6/.github/classroom, release/mp6/courses_microservice : mp6/courses_microservice, release/mp6/test_microservice.py : mp6/test_microservice.py'
     - name: Setup Python
       uses: actions/setup-python@v2
       with:
