@@ -10,7 +10,25 @@
 void *client_thread(void *vptr) {
   int fd = *((int *)vptr);
 
-  return NULL;
+  HTTPRequest * req = malloc(sizeof(HTTPRequest));
+  httprequest_read(req, fd);
+  close(fd);
+
+  char * response = calloc(10000,1);
+  sprintf(response, "%s 200 OK\r\n", req->version);
+  dic * curr = req->head;
+  while(curr) {
+    strcat(response, curr->key);
+    strcat(response, ": ");
+    strcat(response, curr->value);
+    strcat(response, "\r\n");
+  }
+  strcat(response, "\r\n");
+  int i = 0;
+  while(response[i] != 0) i++;
+  memcpy(response+i, req->payload, atoi(httprequest_get_header(req, "Content-Length")));
+
+  send(fd, response, strlen(response), 0);
 }
 
 int main(int argc, char *argv[]) {

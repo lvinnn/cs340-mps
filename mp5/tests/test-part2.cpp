@@ -216,6 +216,12 @@ TEST_CASE("httprequest_read - Arbitrary Long Binary Payload", "[weight=4][part=2
     strlen(full_request_begin) + Length
   );
   REQUIRE( req->payload != NULL );
+  printf("fuck was at 32695: %d, %d\n", ((char *)req->payload)[32695], payload[32695]);
+  for(int i=0; i<Length; i++) {
+    if(((char *)req->payload)[i] != payload[i]) {
+      printf("not equal bruh [%d]: %d, %d\n", i, ((char *)req->payload)[i], payload[i]);
+    }
+  }
   CHECK( memcmp(req->payload, payload, Length) == 0 );
   free(payload);
   free(full_request_begin);

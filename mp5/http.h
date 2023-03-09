@@ -7,18 +7,27 @@ extern "C" {
 #endif
 
 
+typedef struct dick {
+    struct dick *next;
+    char *key;
+    char *value;
+} dic;
+
 struct _HTTPRequest {
   const char *action;
   const char *path;
   const char *version;
   const void *payload;
 
+  struct dick *head;
   // You may want to add more to this struct (ex: to hold the headers).
   // ...however, you MUST keep the `action`, `path`, `version`, and `payload` members
   //    so our test cases can inspect the contents of them without making you write
   //    a bunch of getter functions. :)
 };
 typedef struct _HTTPRequest HTTPRequest;
+
+
 
 
 ssize_t httprequest_read(HTTPRequest *req, int sockfd);
