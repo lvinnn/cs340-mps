@@ -4,11 +4,30 @@ import json, io, os
 import hashlib
 import requests
 
+def find_history_start():
+  # Verify server is running:
+  try:
+    r = requests.get(f"{vmHost}/", verify=False, timeout=2)
+    r.raise_for_status()
+  except requests.exceptions.Timeout:
+    pytest.fail(f"Timeout on connection to {vmHost}/.  Is your MP running on your VM?", pytrace=False)
+  
+  # Find starting point of history
+  for i in range(100):
+    r = requests.get(f"{vmHost}/extract/{i}")
+
+    if r.status_code == 404:
+      print(f"Discovered next history index is: {i}")
+      return i
+    elif r.status_code != 200:
+      r.raise_for_status()
+
+  pytest.fail(f"Failed to find history starting point.")
+
+
 @pytest.fixture(autouse=True, scope='session')
 def find_vm():
   global vmHost
-  global historyStart
-  HISTORY_START_TIMEOUT = -999
 
   # Find vmHost from mapping:
   with open("test_vm-mappings.json", "r") as f:
@@ -26,33 +45,13 @@ def find_vm():
   else:
     vmHost = "http://" + vmMap[hash] + ":5000"
 
-  # Verify server is running:
-  try:
-    r = requests.get(f"{vmHost}/", verify=False, timeout=2)
-    r.raise_for_status()
-  except requests.exceptions.Timeout:
-    pytest.fail(f"Timeout on connection to {vmHost}/.  Is your MP running on your VM?", pytrace=False)
-  
-  # Find starting point of history
-  for i in range(100):
-    r = requests.get(f"{vmHost}/extract/{i}")
-
-    if r.status_code == 404:
-      historyStart = i
-      print(f"History starts at {historyStart}")
-      return
-    elif r.status_code != 200:
-      r.raise_for_status()
-
-  pytest.fail(f"Failed to find history starting point.")
-
 
 def test_vm_no_hidden_gif():
   test_file = open('sample/no-uiuc-chunk.png', 'rb')
   data = {'png': ('no-uiuc-chunk.png', test_file.read())}
   url = f"{vmHost}/extract"
 
-  print(f"Testing: POST {url}")
+  print(f"Sending: POST {url}")
   r = requests.post(url, files=data)
   assert(r.status_code == 415)
 
@@ -61,7 +60,7 @@ def test_vm_hidden_gif_waf():
   data = {'png': ('waf.png', test_file.read())}
   url = f"{vmHost}/extract"
 
-  print(f"Testing: POST {url}")
+  print(f"Sending: POST {url}")
   r = requests.post(url, files=data)
   assert(r.status_code == 200)
   assert(r.content == open('sample/waf.gif','rb').read())
@@ -71,31 +70,40 @@ def test_vm_hidden_gif_natalia():
   data = {'png': ('natalia.png', test_file.read())}
   url = f"{vmHost}/extract"
 
-  print(f"Testing: POST {url}")
+  print(f"Sending: POST {url}")
   r = requests.post(url, files=data)
   assert(r.status_code == 200)
   assert(r.content == open('sample/natalia.gif','rb').read())
 
 
 def test_vm_no_saved_gif():
+  historyStart = find_history_start()
+  test_vm_hidden_gif_waf()
+  test_vm_hidden_gif_natalia()
   url = f'{vmHost}/extract/{historyStart + 100}'
 
-  print(f"Testing: GET {url}")
+  print(f"Sending: GET {url}")
   r = requests.get(url)
   assert(r.status_code == 404)
 
 def test_vm_get_gif_waf():
+  historyStart = find_history_start()
+  test_vm_hidden_gif_waf()
+  test_vm_hidden_gif_natalia()
   url = f'{vmHost}/extract/{historyStart}'
 
-  print(f"Testing: GET {url}")
+  print(f"Sending: GET {url}")
   r = requests.get(url)
   assert(r.status_code == 200)
   assert(r.content == open('sample/waf.gif','rb').read())
 
 def test_vm_get_gif_natalia():
+  historyStart = find_history_start()
+  test_vm_hidden_gif_waf()
+  test_vm_hidden_gif_natalia()
   url = f'{vmHost}/extract/{historyStart + 1}'
 
-  print(f"Testing: GET {url}")
+  print(f"Sending: GET {url}")
   r = requests.get(url)
   assert(r.status_code == 200)
   assert(r.content == open('sample/natalia.gif','rb').read())

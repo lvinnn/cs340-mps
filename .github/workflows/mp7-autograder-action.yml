@@ -4,7 +4,7 @@ name: mp7 autograding
 jobs:
   autograding:
     name: autograding
-    runs-on: [self-hosted, linux]
+    runs-on: '[self-hosted, linux]'
     timeout-minutes: 5
     steps:
     - name: Checkout release repository
@@ -30,7 +30,7 @@ jobs:
       with:
         reference_files: 'release/mp7/.github/classroom : mp7/.github/classroom, release/mp7/test_flask.py : mp7/test_flask.py, release/mp7/test_vm.py : mp7/test_vm.py, release/mp7/test_vm-mappings.json : mp7/test_vm-mappings.json, release/mp7/sample : mp7/sample'
     - name: Setup Python
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4
       with:
         python-version: 3.9
     - run: pip install -r mp7/requirements.txt

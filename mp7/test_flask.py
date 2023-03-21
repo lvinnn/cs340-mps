@@ -43,11 +43,16 @@ def test_no_saved_gif(test_client):
     assert(response.status_code == 404)
 
 def test_get_gif_waf(test_client):
+    test_hidden_gif_waf(test_client)
+    
     response = test_client.get('/extract/0')
     assert(response.status_code == 200)
     assert(response.get_data() == open('sample/waf.gif','rb').read())
 
 def test_get_gif_natalia(test_client):
+    test_hidden_gif_waf(test_client)
+    test_hidden_gif_natalia(test_client)
+
     response = test_client.get('/extract/1')
     assert(response.status_code == 200)
     assert(response.get_data() == open('sample/natalia.gif','rb').read())
