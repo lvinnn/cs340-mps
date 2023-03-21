@@ -18,3 +18,4 @@ def extract_hidden_gif():
 @app.route('/extract/<int:image_num>', methods=['GET'])
 def extract_image(image_num):
   # ...
+  
