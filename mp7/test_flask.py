@@ -22,6 +22,13 @@ def test_no_hidden_gif(test_client):
     response = test_client.post('/extract', data=data, content_type='multipart/form-data')
     assert(response.status_code == 415)
 
+def test_not_valid_png(test_client):
+    test_file = open('sample/waf.gif', 'rb')
+
+    data = {'png': (io.BytesIO(test_file.read()), 'waf.gif')}
+    response = test_client.post('/extract', data=data, content_type='multipart/form-data')
+    assert(response.status_code == 422)
+
 def test_hidden_gif_waf(test_client):
     test_file = open('sample/waf.png', 'rb')
 

@@ -55,6 +55,15 @@ def test_vm_no_hidden_gif():
   r = requests.post(url, files=data)
   assert(r.status_code == 415)
 
+def test_vm_not_valid_png():
+  test_file = open('sample/waf.gif', 'rb')
+  data = {'png': ('waf.gif', test_file.read())}
+  url = f"{vmHost}/extract"
+
+  print(f"Sending: POST {url}")
+  r = requests.post(url, files=data)
+  assert(r.status_code == 422)
+
 def test_vm_hidden_gif_waf():
   test_file = open('sample/waf.png', 'rb')
   data = {'png': ('waf.png', test_file.read())}
