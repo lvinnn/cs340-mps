@@ -37,8 +37,9 @@ int launch_server() {
 
 
 TEST_CASE("server - loads `/`", "[weight=5][part=3]") {
+  printf("brush\n\n\n\n\n");
   int port = launch_server();
-
+  printf("bruh\n\n\n\n\n");
   char curl[1000];
   sprintf(curl, "curl --max-time 15 -f http://localhost:%d/ >TEST_out.txt", port);
 

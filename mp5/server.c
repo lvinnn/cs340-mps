@@ -8,11 +8,13 @@
 #include <pthread.h>
 
 void *client_thread(void *vptr) {
+  printf("bruh1\n\n\n\n\n");
   int fd = *((int *)vptr);
 
   HTTPRequest * req = malloc(sizeof(HTTPRequest));
   httprequest_read(req, fd);
   close(fd);
+  printf("bruh2\n\n\n\n\n");
 
   char * response = calloc(10000,1);
   sprintf(response, "%s 200 OK\r\n", req->version);
@@ -28,7 +30,10 @@ void *client_thread(void *vptr) {
   while(response[i] != 0) i++;
   memcpy(response+i, req->payload, atoi(httprequest_get_header(req, "Content-Length")));
 
+  printf("bruh\n\n\n\n\n");
   send(fd, response, strlen(response), 0);
+
+  return NULL;
 }
 
 int main(int argc, char *argv[]) {
