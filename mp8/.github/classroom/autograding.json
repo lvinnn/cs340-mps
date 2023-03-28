@@ -93,8 +93,8 @@
       "setup": "",
       "run": "pytest test_microservice.py -k test_cache",
       "comparison": "included",
-      "timeout": 0.1,
-      "points": 1
+      "timeout": 1,
+      "points": 11
     }
   ]
 }
