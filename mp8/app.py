@@ -5,6 +5,7 @@ import os
 import io
 import boto3
 import base64
+import dotenv
 
 app = Flask(__name__)
 

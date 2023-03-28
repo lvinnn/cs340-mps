@@ -22,17 +22,20 @@ def start_microservice():
     microservice.terminate()
 
 
-@pytest.fixture(scope='module')
-def require_docker():
-    proc_run = subprocess.Popen(os.environ['DOCKER_RUN_COMMAND'].split())
-    proc_run.wait()
-    assert(proc_run.returncode == 0)
+#
+# This is done via the GitHub Action
+#
+# @pytest.fixture(scope='module')
+# def require_docker():
+#     proc_run = subprocess.Popen(os.environ['DOCKER_RUN_COMMAND'].split())
+#     proc_run.wait()
+#     assert(proc_run.returncode == 0)
 
-    yield
+#     yield
 
-    proc_stop = subprocess.Popen(os.environ['DOCKER_STOP_COMMAND'].split())
-    proc_stop.wait()
-    assert(proc_stop.returncode == 0)
+#     proc_stop = subprocess.Popen(os.environ['DOCKER_STOP_COMMAND'].split())
+#     proc_stop.wait()
+#     assert(proc_stop.returncode == 0)
 
 
 @pytest.fixture(scope='module')
@@ -187,8 +190,8 @@ def test_change_colormap(start_microservice, test_client):
     assert(r.json["colormap"] == "plasma")
 
 
-def test_cache(start_microservice, require_docker, test_client):
-    time.sleep(2)
+def test_cache(start_microservice, test_client):
+    r = test_client.get('/clearCache')
 
     r = test_client.post('/resetTo', json=INITIAL_STATE)
     assert(r.status_code == 200)
@@ -224,5 +227,54 @@ def test_cache(start_microservice, require_docker, test_client):
     r = test_client.get('/storage')
     assert(r.status_code == 200)
 
-    # 11 images should be in the cache
+    # 5 images should be in the cache
     assert(len(r.get_json()) == 5)
+
+
+def test_cache_replay(start_microservice, test_client):
+    r = test_client.post('/resetTo', json=INITIAL_STATE)
+    r = test_client.get('/mandelbrot')
+
+    r = test_client.post('/lessIterations')
+    r = test_client.get('/mandelbrot')
+
+    r = test_client.post('/lessIterations')
+    r = test_client.get('/mandelbrot')
+
+    r = test_client.post('/lessIterations')
+    r = test_client.get('/mandelbrot')
+
+    r = test_client.post('/moreIterations')
+    r = test_client.get('/mandelbrot')
+
+    r = test_client.post('/moveLeft')
+    r = test_client.get('/mandelbrot')
+
+    r = test_client.post('/moveLeft')
+    r = test_client.get('/mandelbrot')
+
+    r = test_client.get('/storage')
+
+    # 5 old + 1 new images should be in the cache
+    assert(len(r.get_json()) == 6)
+
+def test_cache_restart(start_microservice, test_client):
+    r = test_client.post('/resetTo', json=INITIAL_STATE)
+    r = test_client.get('/mandelbrot')
+
+    r = test_client.get('/storage')
+
+    # 6 images should still be in the cache
+    assert(len(r.get_json()) == 6)    
+
+def test_cache_x_clear(start_microservice, test_client):
+    r = test_client.get('/clearCache')
+    
+    r = test_client.post('/resetTo', json=INITIAL_STATE)
+    assert(r.status_code == 200)
+    r = test_client.get('/mandelbrot')
+    assert(r.status_code == 200)
+
+    # cache is reset, and only 1 image
+    r = test_client.get('/storage')
+    assert(len(r.get_json()) == 1)

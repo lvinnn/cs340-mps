@@ -34,6 +34,8 @@ jobs:
       with:
         python-version: 3.9
     - run: pip install -r mp8/requirements.txt
+    - name: Setup MinIO Server
+      run: docker run --name minio -d -p 9000:9000 -e MINIO_ROOT_USER=ROOTNAME -e MINIO_ROOT_PASSWORD=CHANGEME123 quay.io/minio/minio server /data
     - name: Autograding
       id: autograding
       uses: illinois/autograding@v3
@@ -41,6 +43,10 @@ jobs:
         path: mp8/
         test_suite: autograding
         step_summary: true
+    - name: Stop MinIO Server
+      run: docker stop minio
+    - name: Remove MinIO Server
+      run: docker rm minio
     - name: Generate workflow summary
       if: ${{ always() }}
       run: echo -e "$(sh ./.github/workflows/gen-status-report.sh)" >> $GITHUB_STEP_SUMMARY
