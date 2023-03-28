@@ -18,6 +18,7 @@ def start_microservice():
     host, port = os.getenv('MANDELBROT_MICROSERVICE_URL').split("/")[2].split(":")
 
     microservice = subprocess.Popen([sys.executable, "-m", "flask", "run", "--host", host, "--port", port], cwd="mandelbrot_microservice")
+    time.sleep(0.5)
     yield
     microservice.terminate()
 
@@ -49,7 +50,7 @@ def test_client():
 
 INITIAL_STATE = {'colormap':'cividis', 'real':-0.7435, 'imag':0.126129, 'height':0.00018972901232843951, 'dim':256, 'iter':512}
 
-def test_move_up(start_microservice, test_client):
+def test_move_up(test_client):
     r = test_client.post('/resetTo', json=INITIAL_STATE)
     assert(r.status_code == 200)
 
@@ -61,7 +62,7 @@ def test_move_up(start_microservice, test_client):
     assert(math.isclose(r.json["imag"], INITIAL_STATE["imag"] + (INITIAL_STATE['height'] / 4)))
 
 
-def test_move_down(start_microservice, test_client):
+def test_move_down(test_client):
     r = test_client.post('/resetTo', json=INITIAL_STATE)
     assert(r.status_code == 200)
 
@@ -73,7 +74,7 @@ def test_move_down(start_microservice, test_client):
     assert(math.isclose(r.json["imag"], INITIAL_STATE["imag"] - (INITIAL_STATE['height'] / 4)))
 
 
-def test_move_right(start_microservice, test_client):
+def test_move_right(test_client):
     r = test_client.post('/resetTo', json=INITIAL_STATE)
     assert(r.status_code == 200)
 
@@ -85,7 +86,7 @@ def test_move_right(start_microservice, test_client):
     assert(math.isclose(r.json["real"], INITIAL_STATE["real"] + (INITIAL_STATE['height'] / 4)))
 
 
-def test_move_left(start_microservice, test_client):
+def test_move_left(test_client):
     r = test_client.post('/resetTo', json=INITIAL_STATE)
     assert(r.status_code == 200)
 
@@ -96,7 +97,7 @@ def test_move_left(start_microservice, test_client):
     assert(r.status_code == 200)
     assert(math.isclose(r.json["real"], INITIAL_STATE["real"] - (INITIAL_STATE['height'] / 4)))
 
-def test_zoom_in(start_microservice, test_client):
+def test_zoom_in(test_client):
     r = test_client.post('/resetTo', json=INITIAL_STATE)
     assert(r.status_code == 200)
 
@@ -107,7 +108,7 @@ def test_zoom_in(start_microservice, test_client):
     assert(r.status_code == 200)
     assert(math.isclose(r.json["height"], INITIAL_STATE["height"] * (1/1.4)))
 
-def test_zoom_out(start_microservice, test_client):
+def test_zoom_out(test_client):
     r = test_client.post('/resetTo', json=INITIAL_STATE)
     assert(r.status_code == 200)
 
@@ -118,7 +119,7 @@ def test_zoom_out(start_microservice, test_client):
     assert(r.status_code == 200)
     assert(math.isclose(r.json["height"], INITIAL_STATE["height"] * (1.4)))
 
-def test_larger_image(start_microservice, test_client):
+def test_larger_image(test_client):
     r = test_client.post('/resetTo', json=INITIAL_STATE)
     assert(r.status_code == 200)
 
@@ -133,7 +134,7 @@ def test_larger_image(start_microservice, test_client):
         math.isclose(r.json["dim"], round(INITIAL_STATE["dim"] * (1.25)))
     )
 
-def test_smaller_image(start_microservice, test_client):
+def test_smaller_image(test_client):
     r = test_client.post('/resetTo', json=INITIAL_STATE)
     assert(r.status_code == 200)
 
@@ -148,7 +149,7 @@ def test_smaller_image(start_microservice, test_client):
         math.isclose(r.json["dim"], round(INITIAL_STATE["dim"] * (1 / 1.25)))
     )
 
-def test_more_iterations(start_microservice, test_client):
+def test_more_iterations(test_client):
     r = test_client.post('/resetTo', json=INITIAL_STATE)
     assert(r.status_code == 200)
 
@@ -163,7 +164,7 @@ def test_more_iterations(start_microservice, test_client):
         math.isclose(r.json["iter"], round(INITIAL_STATE["iter"] * 2))
     )
 
-def test_less_iterations(start_microservice, test_client):
+def test_less_iterations(test_client):
     r = test_client.post('/resetTo', json=INITIAL_STATE)
     assert(r.status_code == 200)
 
@@ -178,7 +179,7 @@ def test_less_iterations(start_microservice, test_client):
         math.isclose(r.json["iter"], round(INITIAL_STATE["iter"] / 2))
     )
 
-def test_change_colormap(start_microservice, test_client):
+def test_change_colormap(test_client):
     r = test_client.post('/resetTo', json=INITIAL_STATE)
     assert(r.status_code == 200)
 
