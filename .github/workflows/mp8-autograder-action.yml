@@ -23,21 +23,17 @@ jobs:
       with:
         src_path: release/mp8
         dst_path: mp8
-        copy: '.github/classroom : .github/classroom, mandelbrot_microservice : mandelbrot_microservice, test_microservice.py : test_microservice.py'
+        copy: '.github/classroom : .github/classroom, mandelbrot_microservice : mandelbrot_microservice, test_microservice.py : test_microservice.py, sample : sample, requirements.txt : requirements.txt'
     - name: Verify student submission
       id: verify-policy
       uses: illinois/verify-policy@v1
       with:
-        reference_files: 'release/mp8/.github/classroom : mp8/.github/classroom, release/mp8/mandelbrot_microservice : mp8/mandelbrot_microservice, release/mp8/test_microservice.py : mp8/test_microservice.py'
+        reference_files: 'release/mp8/.github/classroom : mp8/.github/classroom, release/mp8/mandelbrot_microservice : mp8/mandelbrot_microservice, release/mp8/test_microservice.py : mp8/test_microservice.py, release/mp8/sample : mp8/sample, release/mp8/requirements.txt : mp8/requirements.txt'
     - name: Setup Python
       uses: actions/setup-python@v4
       with:
         python-version: 3.9
     - run: pip install -r mp8/requirements.txt
-    - name: Setup MongoDB Server
-      uses: supercharge/mongodb-github-action@1.7.0
-      with:
-        mongodb-version: latest
     - name: Autograding
       id: autograding
       uses: illinois/autograding@v3

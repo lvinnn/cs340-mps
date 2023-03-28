@@ -1,3 +1,6 @@
 flask
 boto3
 Pillow
+pytest
+python-dotenv
+requests

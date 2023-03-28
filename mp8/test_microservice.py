@@ -24,8 +24,10 @@ def start_microservice():
 
 @pytest.fixture(scope='module')
 def require_docker():
-    subprocess.Popen(os.environ['DOCKER_RUN_COMMAND'].split())
-    
+    proc_run = subprocess.Popen(os.environ['DOCKER_RUN_COMMAND'].split())
+    proc_run.wait()
+    assert(proc_run.returncode == 0)
+
     yield
 
     proc_stop = subprocess.Popen(os.environ['DOCKER_STOP_COMMAND'].split())
