@@ -4,3 +4,4 @@ Pillow
 pytest
 python-dotenv
 requests
+matplotlib
