@@ -93,32 +93,32 @@
       "setup": "",
       "run": "pytest test_microservice.py -k test_cache",
       "comparison": "included",
-      "timeout": 0.1,
-      "points": 1
+      "timeout": 1,
+      "points": 3
     },
     {
       "name": "test_microservice.py - test_cache_replay",
       "setup": "",
       "run": "pytest test_microservice.py -k test_cache_replay",
       "comparison": "included",
-      "timeout": 0.1,
-      "points": 1
+      "timeout": 1,
+      "points": 3
     },
     {
       "name": "test_microservice.py - test_cache_restart",
       "setup": "",
       "run": "pytest test_microservice.py -k test_cache_restart",
       "comparison": "included",
-      "timeout": 0.1,
-      "points": 1
+      "timeout": 1,
+      "points": 3
     },
     {
       "name": "test_microservice.py - test_cache_x_clear",
       "setup": "",
       "run": "pytest test_microservice.py -k test_cache_x_clear",
       "comparison": "included",
-      "timeout": 0.1,
-      "points": 1
+      "timeout": 1,
+      "points": 3
     }
   ]
 }
