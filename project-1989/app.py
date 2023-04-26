@@ -37,40 +37,9 @@ def POST_makeMosaic():
   f = request.files["image"]
   for i in range(1, 6):
     f.seek(0)
-    r = requests.post("http://127.0.0.1:500%d/" % i, files={'image': f}, data={'tilesAcross': str(10), 'renderedTileSize': str(10)})
+    r = requests.post("http://127.0.0.1:500%d/" % i, files={'image': f}, data={'tilesAcross': str(15), 'renderedTileSize': str(15)})
     response.append({
       "image": "data:image/png;base64," + r.content.decode('utf-8')
     })
 
   return jsonify(response)
-
-def mosaic(img, mg_path):
-  global tilesAcross
-  width, height = img.size
-  tile_size = int(width/tilesAcross)
-
-  for i in range(int(height/tile_size)):
-    for j in range(tilesAcross):
-      x_coord, y_coord = j*tile_size, i*tile_size
-      crop = img.crop((x_coord, y_coord, x_coord + tile_size, y_coord + tile_size))
-      crop_array = np.array(crop)
-      average_color = crop_array.mean(axis=(0, 1)).astype(int)[0:3]
-      global tree
-      distances, ind = tree[mg_path].query(average_color.reshape(1, -1))
-      min_img = av_colors[mg_path][ind[0][0]][0]
-
-      with Image.open(mg_path+"/"+min_img) as sample_image:
-        min_dim = min(sample_image.width, sample_image.height)
-        img_cropped = sample_image.crop((0, 0, min_dim, min_dim))
-        img_resized = img_cropped.resize((tile_size, tile_size), resample=Image.LANCZOS)
-        crop = img_resized
-
-      img.paste(crop, (x_coord,y_coord))
-    
-  img = img.crop((0,0,tilesAcross*tile_size,int(height/tile_size)*tile_size))
-
-  buffer = BytesIO()
-  img.save(buffer, format='PNG')
-  img_bytes = buffer.getvalue()
-
-  return base64.b64encode(img_bytes)
