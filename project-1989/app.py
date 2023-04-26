@@ -1,4 +1,5 @@
 from flask import Flask, jsonify, render_template, request
+import requests
 import base64
 from PIL import Image
 import numpy as np
@@ -9,7 +10,7 @@ from sklearn.neighbors import KDTree
 app = Flask(__name__)
 
 folder_dirs = ["static/MG1", "static/MG2"]
-tiles_across = 10
+tilesAcross = 10
 av_colors = {}
 tree = {}
 for path in folder_dirs:
@@ -31,26 +32,25 @@ def GET_index():
 
 @app.route('/makeMosaic', methods=["POST"])
 def POST_makeMosaic():
-  f = request.files["image"]
-  img = Image.open(BytesIO(f.read()))
   response = []
-  
-  global folder_dirs
-  for path in folder_dirs:
-    b64 = mosaic(img, path)
+
+  f = request.files["image"]
+  for i in range(1, 6):
+    f.seek(0)
+    r = requests.post("http://127.0.0.1:500%d/" % i, files={'image': f}, data={'tilesAcross': str(10), 'renderedTileSize': str(10)})
     response.append({
-      "image": "data:image/png;base64," + b64.decode('utf-8')
+      "image": "data:image/png;base64," + r.content.decode('utf-8')
     })
 
   return jsonify(response)
 
 def mosaic(img, mg_path):
-  global tiles_across
+  global tilesAcross
   width, height = img.size
-  tile_size = int(width/tiles_across)
+  tile_size = int(width/tilesAcross)
 
   for i in range(int(height/tile_size)):
-    for j in range(tiles_across):
+    for j in range(tilesAcross):
       x_coord, y_coord = j*tile_size, i*tile_size
       crop = img.crop((x_coord, y_coord, x_coord + tile_size, y_coord + tile_size))
       crop_array = np.array(crop)
@@ -67,7 +67,7 @@ def mosaic(img, mg_path):
 
       img.paste(crop, (x_coord,y_coord))
     
-  img = img.crop((0,0,tiles_across*tile_size,int(height/tile_size)*tile_size))
+  img = img.crop((0,0,tilesAcross*tile_size,int(height/tile_size)*tile_size))
 
   buffer = BytesIO()
   img.save(buffer, format='PNG')
