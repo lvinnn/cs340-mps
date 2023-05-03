@@ -1,4 +1,5 @@
 from flask import Flask, jsonify, render_template, request
+import requests
 import base64
 from PIL import Image
 import numpy as np
@@ -8,12 +9,15 @@ from sklearn.neighbors import KDTree
 
 app = Flask(__name__)
 mg_path = "../../static/MG2"
-tilesAcross = 10
 
 av_colors = {}
 tree = {}
 av_colors[mg_path] = []
 tree[mg_path] = []
+
+middleURL = "http://127.0.0.1:5000/addMMG"
+d = {"name": "peak", "url": "http://127.0.0.1:5002/", "author": "elvinwc2"}
+requests.put(middleURL, d)
 
 for img_name in os.listdir(mg_path):
     with Image.open(mg_path+"/"+img_name) as img:
@@ -25,9 +29,9 @@ tree[mg_path] = KDTree([color[:3] for _, color in av_colors[mg_path]])
 @app.route('/', methods=["POST"])
 def mosaic():
     global mg_path
-    global tilesAcross
-    tilesAcross = int(request.form['tilesAcross'])
-    renderedTileSize = int(request.form['renderedTileSize'])
+
+    tilesAcross = int(request.args.get('tilesAcross'))
+    renderedTileSize = int(request.args.get('renderedTileSize'))
 
     f = request.files['image']
     img = Image.open(f.stream)
@@ -48,17 +52,21 @@ def mosaic():
             with Image.open(mg_path+"/"+min_img) as sample_image:
                 min_dim = min(sample_image.width, sample_image.height)
                 img_cropped = sample_image.crop((0, 0, min_dim, min_dim))
-                img_resized = img_cropped.resize((tile_size, tile_size), resample=Image.LANCZOS)
+                img_resized = img_cropped.resize((tile_size, tile_size))
                 crop = img_resized
 
             img.paste(crop, (x_coord,y_coord))
         
     tilesVert = int(height/tile_size)
     img = img.crop((0,0,tilesAcross*tile_size,tilesVert*tile_size))
-    img = img.resize((renderedTileSize*tilesAcross, renderedTileSize*tilesVert), resample=Image.LANCZOS)
+    img = img.resize((renderedTileSize*tilesAcross, renderedTileSize*tilesVert))
 
     buffer = BytesIO()
     img.save(buffer, format='PNG')
-    img_bytes = buffer.getvalue()
+    b64 = base64.b64encode(buffer.getvalue())
+    response = []
+    response.append({
+        "image": "data:image/png;base64," + b64.decode('utf-8')
+    })
 
-    return base64.b64encode(img_bytes), 200
+    return jsonify(response), 200

@@ -1,4 +1,5 @@
 from flask import Flask, jsonify, render_template, request
+import requests
 import base64
 from PIL import Image
 import numpy as np
@@ -8,12 +9,15 @@ from sklearn.neighbors import KDTree
 
 app = Flask(__name__)
 mg_path = "../../static/MG3"
-tilesAcross = 10
 
 av_colors = {}
 tree = {}
 av_colors[mg_path] = []
 tree[mg_path] = []
+
+middleURL = "http://127.0.0.1:5000/addMMG"
+d = {"name": "ocean", "url": "http://127.0.0.1:5003/", "author": "elvinwc2"}
+requests.put(middleURL, d)
 
 for img_name in os.listdir(mg_path):
     with Image.open(mg_path+"/"+img_name) as img:
@@ -25,9 +29,9 @@ tree[mg_path] = KDTree([color[:3] for _, color in av_colors[mg_path]])
 @app.route('/', methods=["POST"])
 def mosaic():
     global mg_path
-    global tilesAcross
-    tilesAcross = int(request.form['tilesAcross'])
-    renderedTileSize = int(request.form['renderedTileSize'])
+
+    tilesAcross = int(request.args.get('tilesAcross'))
+    renderedTileSize = int(request.args.get('renderedTileSize'))
 
     f = request.files['image']
     img = Image.open(f.stream)
@@ -59,6 +63,10 @@ def mosaic():
 
     buffer = BytesIO()
     img.save(buffer, format='PNG')
-    img_bytes = buffer.getvalue()
+    b64 = base64.b64encode(buffer.getvalue())
+    response = []
+    response.append({
+        "image": "data:image/png;base64," + b64.decode('utf-8')
+    })
 
-    return base64.b64encode(img_bytes), 200
+    return jsonify(response), 200
