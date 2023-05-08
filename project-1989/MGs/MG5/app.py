@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, render_template, request
+from flask import Flask, jsonify, render_template, request, make_response
 import requests
 import base64
 from PIL import Image
@@ -16,7 +16,7 @@ av_colors[mg_path] = []
 tree[mg_path] = []
 
 middleURL = "http://127.0.0.1:5000/addMMG"
-d = {"name": "cars", "url": "http://127.0.0.1:5005/", "author": "elvinwc2"}
+d = {"name": "cars", "url": "http://127.0.0.1:5005/", "author": "elvinwc2", "tileImageCount": 60}
 requests.put(middleURL, d)
 
 for img_name in os.listdir(mg_path):
@@ -32,8 +32,10 @@ def mosaic():
 
     tilesAcross = int(request.args.get('tilesAcross'))
     renderedTileSize = int(request.args.get('renderedTileSize'))
+    fileFormat = request.args.get('fileFormat')
 
     f = request.files['image']
+
     img = Image.open(f.stream)
 
     width, height = img.size
@@ -61,12 +63,8 @@ def mosaic():
     img = img.crop((0,0,tilesAcross*tile_size,tilesVert*tile_size))
     img = img.resize((renderedTileSize*tilesAcross, renderedTileSize*tilesVert))
 
-    buffer = BytesIO()
-    img.save(buffer, format='PNG')
-    b64 = base64.b64encode(buffer.getvalue())
-    response = []
-    response.append({
-        "image": "data:image/png;base64," + b64.decode('utf-8')
-    })
+    img_file = BytesIO()
+    img.save(img_file, format=fileFormat)
 
-    return jsonify(response), 200
+    r = make_response(img_file.getvalue())
+    return r
